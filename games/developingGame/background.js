@@ -1,3 +1,5 @@
+let WorldTickSpeed = 1;
+
 const getParticle = (factor = 1) => {
 
     const properties = {
@@ -28,32 +30,66 @@ return{
         context.rect(properties.pos.x, properties.pos.y, properties.size.width, properties.size.height);
         context.fill();
     },
+    setVelocity: (speed = 1) => {
+    properties.vel.y = speed * properties.vel.y;
+    },
+    starVel: properties.vel,
 }
 
 }
 
 
 const getMeteor = () => {
-    let sizeVariable = getRandomNumber(3, 0, 1);
+    let sizeVariable = getRandomNumber(10, 0, 1);
     const properties = {
         size: {width: sizeVariable, height: sizeVariable * getRandomNumber(1, 0.5, 1)},
-        vel: {x: 0, y: getRandomNumber(5, 10, 0)},
-        color: {r: getRandomNumber(150),g: 0,b: 0},
-        pos: {x: getRandomNumber(canvas.width), y: 0},
+        pos: getVector(),
+        vel: getVector(),
+        color: {r: getRandomNumber(150, 50),g: 0,b: 0},
     }
-    properties.y = - properties.size.y;
 
+    properties.pos.x = getRandomNumber(canvas.width);
+    properties.pos.y =  - properties.size.height;
+    properties.vel.x = 0;
+    properties.vel.y = getRandomNumber(5, 10);
+    
     return{
         update: () => {
             properties.pos.add(properties.vel);
-
-            if( properties.pos.y + size.y > canvas.height){
+            console.log(properties.size.height);
+            
+            if( properties.pos.y - 2 * properties.size.height > canvas.height){
                 activateMeteor = false;
+
+                sizeVariable = getRandomNumber(10, 0, 1);
+                properties.pos.x = getRandomNumber(canvas.width);
+                properties.pos.y =  - properties.size.height;
+                properties.vel.x = 0;
+                properties.vel.y = getRandomNumber(5, 10);
+                properties.color.r = getRandomNumber(150, 50);
+                properties.size.width = sizeVariable;
+                properties.size.height = sizeVariable * getRandomNumber(1, 0.5, 1);
             }
+            
         },
-        draw: () => {},
+        draw: () => {
+            context.beginPath();
+            context.fillStyle = `rgb(${properties.color.r},${properties.color.g},${properties.color.b})`;
+            context.strokeStyle= `rgb(${properties.color.r - 35},${properties.color.g},${properties.color.b})`;
+
+            context.moveTo(properties.pos.x, properties.pos.y - properties.size.height);
+            context.lineTo(properties.pos.x + properties.size.width, properties.pos.y)
+            context.lineTo(properties.pos.x , properties.pos.y + properties.size.height);
+            context.lineTo(properties.pos.x- properties.size.width, properties.pos.y );
+
+            context.closePath();
+            context.stroke();
+            context.fill();
+        },
+        properties,
     }
 }
+
 
 const getVector = (xInc = 0, yInc = 0) => {
     let x = xInc;
