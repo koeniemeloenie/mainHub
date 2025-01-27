@@ -1,4 +1,10 @@
-let WorldTickSpeed = 1;
+const slideProperties = {
+    worldTickSpeed: 1,
+}
+// slider1.value = '1';
+// slider1.min = '.5';
+// slider1.max = '5';
+// slider1.step = '0.5';
 
 const getParticle = (factor = 1) => {
 
@@ -16,7 +22,7 @@ const getParticle = (factor = 1) => {
 
 return{
     update: () => {
-        properties.pos.add(properties.vel);
+        properties.pos.y += slideProperties.worldTickSpeed * properties.vel.y;
         
         if(properties.pos.y > canvas.height + properties.size.height){
             properties.pos = makePos();
@@ -56,7 +62,6 @@ const getMeteor = () => {
     return{
         update: () => {
             properties.pos.add(properties.vel);
-            console.log(properties.size.height);
             
             if( properties.pos.y - 2 * properties.size.height > canvas.height){
                 activateMeteor = false;
